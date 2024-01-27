@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>채팅앱</h1>
+    <%- include('login-nav.ejs') %>
+
+    <div>
+        <h3>채팅방 개설</h3>
+        <button onclick="history.back()">뒤로가기</button>
+    </div>
+    <h2>친구 추가</h2>
+
+<select id="friend_list">
+    <% for(let i = 0; i < member.length; i++){ %>
+        <option value="<%= member[i]._id %>"><%= member[i].username %></option>
+    <% } %>
+    <!-- 다른 원본 목록 항목들을 추가할 수 있습니다. -->
+</select>
+
+<button onclick="addItem()">추가하기</button>
+
+<h3>추가된 목록</h3>
+<ul id="addedItemsList"></ul>
+
+
+<button class="send">완료</button>
+<script>
+    function addItem() {
+        var selectElement = document.getElementById('friend_list');
+        var addedList = document.getElementById('addedItemsList');
+
+        // 선택한 값을 가져오기
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var selectedValue = selectedOption.value;
+        var selectedText = selectedOption.textContent;
+
+        // 중복 확인
+        if (!isValueInList(addedList, selectedText)) {
+            // 중복이 아니면 추가
+            var listItem = document.createElement('li');
+            listItem.textContent = selectedText;
+            addedList.appendChild(listItem);
+
+            // 선택한 항목을 원본 목록에서 삭제
+            selectElement.remove(selectedOption.index);
+
+            // 서버로 데이터 전송
+            
+        } else {
+            alert("이미 추가된 값입니다.");
+        }
+    }
+
+
+
+    function isValueInList(list, value) {
+        // 목록에서 중복 확인
+        var items = list.getElementsByTagName('li');
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].textContent === value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function sendToServer(selectedValue) {
+        fetch('/your-server-endpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ value: selectedValue })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    }
+
+
+    var sendButtons = document.querySelectorAll('.send');
+    sendButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var selectElement = document.getElementById('friend_list');
+            var addedList = document.getElementById('addedItemsList');
+
+            // 선택한 값을 가져오기
+            var selectedOptions = selectElement.selectedOptions;
+            var selectedValues = Array.from(selectedOptions).map(option => option.value);
+
+            // 서버로 데이터 전송
+            sendToServer(selectedValues);
+        });
+    });
+</script>
+</body>

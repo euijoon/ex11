@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>채팅앱</h1>
+    <%- include('login-nav.ejs') %>
+    <div>
+        <% if(!user){ %>
+
+        <% }else{ %>
+            <fieldset>
+
+                <h3>채팅 참여유저</h3>
+                <p>
+                <% for(let i = 0; i < result.length; i++){ %>
+                    <% if(i + 1 == result.length){ %>
+                        <%= result[i].username%>
+                    <% }else{ %>
+                        <%= result[i].username%>,
+                    <% } %>
+                      
+                <% } %>
+                </p>
+            </fieldset>
+        <% } %>    
+    </div>
+
+    <div class="chat-screen">
+
+    </div>
+    <input type="text" size="50" class="chat-input">
+    <button class="chat-button">🎈</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/socket.io@4.7.2/client-dist/socket.io.min.js"></script>
+    <script>
+      const socket = io() 
+      socket.emit('join', 'chat-app')
+      document.querySelector('.chat-button').addEventListener('click', function () {
+    let write = document.querySelector('.chat-input').value
+    socket.emit('message-send', { room: 'chat-app', msg: write })
+  })
+
+  socket.on('broadcast', (data) => {
+    document.querySelector('.chat-screen')
+      .insertAdjacentHTML('beforeend', `<div class="chat-box"><span>${data}</span></div>`)
+  })
+
+
+
+
+    </script>
+    
+
+</body>
+</html>

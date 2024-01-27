@@ -1,0 +1,33 @@
+
+<% if(page == 'modify_profile') { %>
+    <form action="/modify_profile?_method=PUT" method="POST">
+        <fieldset>
+            <label for="">닉네임 <input type="text" name="username" value="<%= user.username %>"></label>
+            <label for="">패스워드 <input type="password" name="password"></label>
+            <label for="">확인 <input type="password" name="password2"></label>
+            <input type="hidden" name="id" value="<%= user._id %>">
+            <button type="submit">수정</button>
+        </fieldset>
+    </form>
+<% }else{ %> 
+    <% if(user == null){ %>
+        <fieldset>
+            <form action="/login" method="POST">
+                <label for="">닉네임 <input type="text" name="username"></label>
+                <label for="">비밀번호 <input type="password" name="password"></label>
+                <button type="submit">로그인</button> 
+        </form>
+        <button onclick="location.href='/register'">회원가입</button>
+        </fieldset>
+        
+    <% }else{ %>
+        <fieldset>
+            <h5><%= user.username %>님 안녕하세요.</h5>
+            <button onclick="location.href='/modify_profile/<%= user._id %>'">정보변경</button>
+            <button onclick="location.href='/logout'">로그아웃</button>
+        </fieldset>
+        
+    <% } %>
+    <% } %>
+
+
