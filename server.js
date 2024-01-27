@@ -163,13 +163,11 @@ app.put('/modify_profile', async (req,res) => {
 
 
 io.on('connection', async (socket) => {
-  let memberList = await db.collection('user').findOne({ _id : new ObjectId(socket.request.session.passport.user.id)})
-  if(memberList){
-    socket.on('join', (data) =>{
-      socket.join(data);
-      
-    })
-  }
+
+  socket.on('join', (data) =>{
+    socket.join(data);
+    
+  })
   socket.on('message-send', async (data) => {
     io.to(data.room).emit('broadcast', data.msg);
   })  
