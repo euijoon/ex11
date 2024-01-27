@@ -14,7 +14,7 @@ const { Server } = require('socket.io')
 const server = createServer(app)
 const io = new Server(server)
 
-
+app.use(express.static(__dirname + '/public'));
 
 app.set('view engine', 'ejs'); 
 app.use(express.json()); 
@@ -145,6 +145,7 @@ app.get('/logout', (req, res, next) => {
 
 app.get('/', async (req,res, next) => {
   // res.render('chat-list', { page : ''})
+  console.log(req.user)
     if(!req.user){
       res.render('chat-list', { page : '', result : 0});
     }else{
@@ -169,7 +170,8 @@ io.on('connection', async (socket) => {
     
   })
   socket.on('message-send', async (data) => {
-    io.to(data.room).emit('broadcast', data.msg);
+    console.log(data)
+    io.to(data.room).emit('broadcast', data.msg, data.name);
   })  
 
 

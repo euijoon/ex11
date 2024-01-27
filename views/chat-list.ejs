@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/style.css" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
@@ -28,7 +29,6 @@
             </fieldset>
         <% } %>    
     </div>
-
     <div class="chat-screen">
 
     </div>
@@ -41,13 +41,28 @@
       socket.emit('join', 'chat-app')
       document.querySelector('.chat-button').addEventListener('click', function () {
     let write = document.querySelector('.chat-input').value
-    socket.emit('message-send', { room: 'chat-app', msg: write })
+    document.querySelector('.chat-input').value = ''
+    
+    if(!'<%= user %>'){
+        }else{
+            socket.emit('message-send', { room: 'chat-app', msg: write, name: '<%= user.username %>'}) 
+    }
+
+    
   })
 
-  socket.on('broadcast', (data) => {
-    document.querySelector('.chat-screen')
-      .insertAdjacentHTML('beforeend', `<div class="chat-box"><span>${data}</span></div>`)
+  socket.on('broadcast', (data_msg, data_name) => {
+    if('<%= user.username %>' == data_name){
+        document.querySelector('.chat-screen')
+      .insertAdjacentHTML('beforeend', `<div class="chat-box mine"><span>${data_name}: ${data_msg}</span></div>`)
+    }else{
+        document.querySelector('.chat-screen')
+      .insertAdjacentHTML('beforeend', `<div class="chat-box"><span>${data_name}: ${data_msg}</span></div>`)
+    }
+
   })
+
+
 
 
 
